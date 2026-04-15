@@ -1,4 +1,4 @@
-export default function Summary({ tasks }) {
+function Summary({ tasks }) {
   const total = tasks.length;
   const completed = tasks.filter((t) => t.completed).length;
 
@@ -11,3 +11,4 @@ export default function Summary({ tasks }) {
     </div>
   );
 }
+export default Summary;

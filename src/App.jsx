@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import Navbar from "./components/Navbar.jsx";
 import Home from "./components/Home.jsx";
 import AddTask from "./components/AddTask.jsx";
 import TaskList from "./components/TaskList.jsx";
 import Summary from "./components/Summary.jsx";
+
 
 
 export default function App() {
@@ -34,25 +35,48 @@ export default function App() {
     return Object.keys(err).length === 0;
   };
 
-  const addTask = () => {
-    if (!validate()) return;
+  const addTask = async () => {
+   if (!validate()) return;
 
-    const newTask = {
-      id: Date.now(),
-      title: form.title,
-      category: form.category,
-      priority: form.priority,
+  await fetch("http://localhost:5000/tasks", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      text: form.title,
       completed: false,
-    };
+    }),
+  });
+  await getTask();
 
-    setTasks([...tasks, newTask]);
-    setForm({ title: "", category: "", priority: "", status: "pending" });
-    setActiveSection("tasklist");
-  };
+ // backend la irundhu fetch pannum
 
-  const toggleTask = (id) => {
-    setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-  };
+  setForm({ title: "", category: "", priority: "", status: "pending" });
+  setActiveSection("tasklist");
+};  
+
+
+  const toggleTask = async (id) => {
+  await fetch(`http://localhost:5000/tasks/${id}`, {
+    method: "PUT",
+  });
+
+   // updated data fetch pannum
+};
+
+
+  const getTasks = async () => {
+  const res = await fetch("http://localhost:5000/tasks");
+  const data = await res.json();
+  setTasks(data);
+};
+
+useEffect(() => {
+  getTasks();
+}, []);
+
+
 
   return (
     <div className="p-6">

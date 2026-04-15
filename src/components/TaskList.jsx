@@ -1,4 +1,4 @@
-export default function TaskList({
+function TaskList({
   tasks,
   toggleTask,
   filter,
@@ -6,16 +6,26 @@ export default function TaskList({
   search,
   setSearch,
 }) {
-  const filteredTasks = tasks
-    .filter((task) => {
-      if (filter === "completed") return task.completed;
-      if (filter === "pending") return !task.completed;
-      if (filter === "high") return task.priority === "high";
-      return true;
-    })
-    .filter((task) =>
-      task.title.toLowerCase().includes(search.toLowerCase())
-    );
+ const filteredTasks = tasks
+  .filter((task) => {
+    if (filter === "completed") return task.completed;
+    if (filter === "pending") return !task.completed;
+    return true;
+  })
+  .filter((task) =>
+    task.text.toLowerCase().includes(search.toLowerCase())
+  );
+
+{filteredTasks.map((task) => (
+  <div key={task._id}>
+    <input
+      type="checkbox"
+      checked={task.completed}
+      onChange={() => toggleTask(task._id)}
+    />
+    {task.text}
+  </div>
+))}
 
   return (
     <div>
@@ -23,10 +33,10 @@ export default function TaskList({
 
       
       <div className="flex gap-2 mb-4">
-        <button onClick={() => setFilter("all")}>All</button>
-        <button onClick={() => setFilter("completed")}>Completed</button>
-        <button onClick={() => setFilter("pending")}>Pending</button>
-        <button onClick={() => setFilter("high")}>High Priority</button>
+        <button onClick={() => setFilter("all")} className="border rounded p-2 bg-pink-300 hover:bg-pink-500 cursor-pointer">All</button>
+        <button onClick={() => setFilter("completed")} className="border rounded p-2 bg-pink-300  hover:bg-pink-500 cursor-pointer">Completed</button>
+        <button onClick={() => setFilter("pending")} className="border rounded p-2 bg-pink-300  hover:bg-pink-500  cursor-pointer">Pending</button>
+        <button onClick={() => setFilter("high")} className="border rounded p-2 bg-pink-300  hover:bg-pink-500 cursor-pointer">High_Priority</button>
       </div>
 
      
@@ -40,15 +50,16 @@ export default function TaskList({
 
      
       {filteredTasks.map((task) => (
-        <div key={task.id}>
+        <div key={task._id}>
           <input
             type="checkbox"
             checked={task.completed}
-            onChange={() => toggleTask(task.id)}
+            onChange={() => toggleTask(task._id)}
           />
-          {task.title}
+          {task.text}
         </div>
       ))}
     </div>
   );
 }
+export default TaskList;
